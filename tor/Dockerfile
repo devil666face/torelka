@@ -1,9 +1,9 @@
 FROM debian:12
 
-ENV container docker
-ENV CONTAINER_TIMEZONE Etc/UTC
-ENV DEBIAN_FRONTEND noninteractive
-ENV SYSTEMD_LOG_LEVEL debug
+ENV container=docker
+ENV CONTAINER_TIMEZONE=Etc/UTC
+ENV DEBIAN_FRONTEND=noninteractive
+ENV SYSTEMD_LOG_LEVEL=debug
 
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
