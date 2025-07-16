@@ -1,0 +1,39 @@
+proxy:
+  type: socks
+interface:
+  device: tun0
+  exclude:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+  custom_routes: []
+  metric: 512
+  sleep: 0
+socks:
+  proto: socks5
+  username: "SOME_USERNAME"
+  password: "SOME_PASSWORD"
+  host: "YOUR_SOCKS5_SERVER"
+  port: 43885
+  args: ""
+ssh:
+  username: ""
+  host: ""
+  port: 22
+  args: []
+chisel:
+  server: ""
+  username: ""
+  password: ""
+  proxy: ""
+dns:
+  enable: true
+  listen: 127.1.1.53
+  render: true
+  resolvers:
+    - ip: 1.1.1.1
+      proto: tcp
+      port: 53
+      rule: ""
+  records:
+    test.lan: 10.10.10.10
