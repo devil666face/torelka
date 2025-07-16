@@ -1,5 +1,30 @@
 ---
 services:
+  socks:
+    image: socks:latest
+    container_name: socks
+    build:
+      context: ./socks
+      dockerfile: Dockerfile
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    cgroup: host
+    volumes:
+      - ./t2s/socks/:/root/.config/t2s
+      - ./gox/config.yaml:/config.yaml
+    restart: no
+    ports:
+      - 1081:1080/tcp # proxy to socks gateway only
+    networks:
+      torelka:
+        ipv4_address: 172.20.100.2
+
   tor:
     image: tor:latest
     container_name: tor
@@ -15,37 +40,19 @@ services:
     cap_add:
       - SYS_ADMIN
     cgroup: host
-    restart: unless-stopped
-    networks:
-      - torelka
+    restart: no
     volumes:
       - ./etc/tor:/etc/tor
+      - ./t2s/tor/:/root/.config/t2s
+      - ./gox/config.yaml:/config.yaml
     ports:
-      - 9050:9050
+      - 1080:1080/tcp # proxy to full relay
+    networks:
+      torelka:
+        ipv4_address: 172.20.100.3
+    depends_on:
+      - socks
 
-  # rss:
-  #   image: rss:latest
-  #   container_name: rss
-  #   build:
-  #     context: ./rss
-  #     dockerfile: Dockerfile
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.docker.network=torelka"
-  #     - "traefik.http.routers.rss.tls=true"
-  #     - "traefik.http.routers.rss.rule=Host(`rss.jtor.xyz`)"
-  #     - "traefik.http.services.rss.loadbalancer.server.scheme=http"
-  #     - "traefik.http.services.rss.loadbalancer.server.port=8080"
-  #   volumes:
-  #     - /opt/docker/jtor/share:/share
-  #   restart: unless-stopped
-  #   networks:
-  #     - torelka
-  #   command:
-  #     - "rss.jtor.xyz"
-    # ports:
-    #   - 8080:8080
-  
 networks:
   torelka:
     name: torelka
