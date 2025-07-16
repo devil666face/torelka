@@ -11,6 +11,9 @@ interface:
   sleep: 0
 socks:
   proto: socks5
+  username: "USERNAME"
+  password: "PASSWORD"
+  host: "REMOTE_SOCKS5_SERVER"
   port: 43885
   args: ""
 ssh:
