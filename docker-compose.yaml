@@ -1,0 +1,56 @@
+---
+services:
+  tor:
+    image: tor:latest
+    container_name: tor
+    build:
+      context: ./tor
+      dockerfile: Dockerfile
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    cgroup: host
+    restart: unless-stopped
+    networks:
+      - torelka
+    volumes:
+      - ./etc/tor:/etc/tor
+    ports:
+      - 9050:9050
+
+  # rss:
+  #   image: rss:latest
+  #   container_name: rss
+  #   build:
+  #     context: ./rss
+  #     dockerfile: Dockerfile
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.docker.network=torelka"
+  #     - "traefik.http.routers.rss.tls=true"
+  #     - "traefik.http.routers.rss.rule=Host(`rss.jtor.xyz`)"
+  #     - "traefik.http.services.rss.loadbalancer.server.scheme=http"
+  #     - "traefik.http.services.rss.loadbalancer.server.port=8080"
+  #   volumes:
+  #     - /opt/docker/jtor/share:/share
+  #   restart: unless-stopped
+  #   networks:
+  #     - torelka
+  #   command:
+  #     - "rss.jtor.xyz"
+    # ports:
+    #   - 8080:8080
+  
+networks:
+  torelka:
+    name: torelka
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.100.0/24
+          gateway: 172.20.100.1
