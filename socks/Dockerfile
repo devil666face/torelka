@@ -8,7 +8,7 @@ ENV SYSTEMD_LOG_LEVEL debug
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
 
-ARG PKG="systemd systemd-sysv tor obfs4proxy iproute2 curl procps"
+ARG PKG="systemd systemd-sysv iproute2 curl procps"
 
 RUN apt-get update --quiet --quiet && \
     apt-get install --quiet --quiet --yes \
@@ -30,6 +30,7 @@ COPY entrypoint.service /etc/systemd/system/entrypoint.service
 COPY entrypoint.sh .
 COPY healthcheck /usr/bin/healthcheck
 
+
 RUN chmod +x /entrypoint.sh && \
     ln -sf /etc/systemd/system/entrypoint.service /etc/systemd/system/multi-user.target.wants/entrypoint.service
 
@@ -41,7 +42,7 @@ RUN tar -xf t2s_linux_amd64.tar.gz -C /usr/bin && \
     chmod +x /usr/bin/t2s && \
     chmod +x /usr/bin/healthcheck
 
-EXPOSE 1080 53
+EXPOSE 1080
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 --start-period=5s \
   CMD /usr/bin/healthcheck
