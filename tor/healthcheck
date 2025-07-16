@@ -1,0 +1,20 @@
+#!/bin/bash
+
+flush() {
+	ip ro del all
+	shutdown -f now
+}
+
+check() {
+	local name=$1
+	if ! pgrep $name >/dev/null; then
+		flush
+		exit 1
+	fi
+}
+
+check tor
+check t2s
+check gox
+
+exit 0

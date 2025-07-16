@@ -1,0 +1,43 @@
+proxy:
+  type: socks
+interface:
+  device: tun0
+  exclude:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - 90.192.45.113/32
+    - 85.215.50.238/32
+    - 51.38.220.224/32
+    - 57.128.59.134/32
+  custom_routes: []
+  metric: 512
+  sleep: 0
+socks:
+  proto: socks5
+  username: ""
+  password: ""
+  host: 127.0.0.1
+  port: 9050
+  args: ""
+ssh:
+  username: ""
+  host: ""
+  port: 22
+  args: []
+chisel:
+  server: ""
+  username: ""
+  password: ""
+  proxy: ""
+dns:
+  enable: true
+  listen: 0.0.0.0
+  render: true
+  resolvers:
+    - ip: 1.1.1.1
+      proto: tcp
+      port: 53
+      rule: ""
+  records:
+    test.lan: 10.10.10.10

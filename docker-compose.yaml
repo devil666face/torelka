@@ -1,0 +1,63 @@
+---
+services:
+  socks:
+    image: socks:latest
+    container_name: socks
+    build:
+      context: ./socks
+      dockerfile: Dockerfile
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    cgroup: host
+    volumes:
+      - ./t2s/socks/:/root/.config/t2s
+      - ./gox/config.yaml:/config.yaml
+    restart: no
+    ports:
+      - 1081:1080/tcp # proxy to socks gateway only
+    networks:
+      torelka:
+        ipv4_address: 172.20.100.2
+
+  tor:
+    image: tor:latest
+    container_name: tor
+    build:
+      context: ./tor
+      dockerfile: Dockerfile
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    cgroup: host
+    restart: no
+    volumes:
+      - ./etc/tor:/etc/tor
+      - ./t2s/tor/:/root/.config/t2s
+      - ./gox/config.yaml:/config.yaml
+    ports:
+      - 1080:1080/tcp # proxy to full relay
+    networks:
+      torelka:
+        ipv4_address: 172.20.100.3
+    depends_on:
+      - socks
+
+networks:
+  torelka:
+    name: torelka
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.100.0/24
+          gateway: 172.20.100.1
