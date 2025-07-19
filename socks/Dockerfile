@@ -42,7 +42,7 @@ RUN tar -xf t2s_linux_amd64.tar.gz -C /usr/bin && \
     chmod +x /usr/bin/t2s && \
     chmod +x /usr/bin/healthcheck
 
-EXPOSE 1080
+EXPOSE 1080 53
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 --start-period=5s \
   CMD /usr/bin/healthcheck
