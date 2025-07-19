@@ -55,9 +55,18 @@ services:
 
 networks:
   torelka:
+    external: true
     name: torelka
     driver: bridge
     ipam:
       config:
         - subnet: 172.20.100.0/24
           gateway: 172.20.100.1
+# use - for set bridge with fixed name `br-torelka`
+# docker network create \
+#   --driver=bridge \
+#   --subnet=172.20.100.0/24 \
+#   --gateway=172.20.100.1 \
+#   --opt "com.docker.network.bridge.name"="br-torelka" \
+#   torelka
+
