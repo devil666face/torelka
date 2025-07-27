@@ -18,7 +18,7 @@ services:
     volumes:
       - ./t2s/socks/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
-    restart: no
+    restart: unless-stopped
     ports:
       - 1081:1080/tcp # proxy to socks gateway only
     networks:
@@ -40,7 +40,7 @@ services:
     cap_add:
       - SYS_ADMIN
     cgroup: host
-    restart: no
+    restart: unless-stopped
     volumes:
       - ./etc/tor:/etc/tor
       - ./t2s/tor/:/root/.config/t2s

@@ -43,7 +43,7 @@ RUN tar -xf t2s_linux_amd64.tar.gz -C /usr/bin && \
 
 EXPOSE 1080 53
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 --start-period=5s \
+HEALTHCHECK --interval=10s --timeout=10s --retries=3 --start-period=15s \
   CMD /usr/bin/healthcheck
 
 ENTRYPOINT ["/lib/systemd/systemd"]

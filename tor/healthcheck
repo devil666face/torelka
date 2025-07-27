@@ -13,8 +13,17 @@ check() {
 	fi
 }
 
+check_tor() {
+	response=$(curl -s 'https://check.torproject.org/api/ip')
+	if ! echo "$response" | grep -q '"IsTor":true'; then
+		flush
+		exit 1
+	fi
+}
+
 check tor
 check t2s
 check gox
+check_tor
 
 exit 0
