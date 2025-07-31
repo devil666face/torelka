@@ -2,6 +2,12 @@
 sysctl -w net.ipv4.ip_forward=1
 ```
 
+# Run
+
+```bash
+docker compose up --build --force-recreate -d
+```
+
 # Configure your network
 
 `default gateway` - `172.20.100.3`
