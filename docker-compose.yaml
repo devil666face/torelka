@@ -18,7 +18,7 @@ services:
     volumes:
       - ./t2s/socks/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
-    restart: no
+    restart: unless-stopped
     ports:
       - 1081:1080/tcp # proxy to socks gateway only
     networks:
@@ -40,33 +40,54 @@ services:
     cap_add:
       - SYS_ADMIN
     cgroup: host
-    restart: no
+    restart: unless-stopped
     volumes:
       - ./etc/tor:/etc/tor
       - ./t2s/tor/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
     ports:
-      - 1080:1080/tcp # proxy to full relay
+      - 1082:1080/tcp # proxy to full relay
     networks:
       torelka:
         ipv4_address: 172.20.100.3
     depends_on:
       - socks
 
+  kali:
+    image: kali-torelka:latest
+    container_name: kali
+    build:
+      context: ./kali
+      dockerfile: Dockerfile
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+      - /sys/fs/cgroup
+    cap_add:
+      - SYS_ADMIN
+    cgroup: host
+    restart: unless-stopped
+    ports:
+      - 13389:3389/tcp # rdp
+    networks:
+      torelka:
+        ipv4_address: 172.20.100.4
+    depends_on:
+      - tor
+    dns: [172.20.100.3]
+    environment:
+      - KALI_HASH=$$6$$XwNMjok.ZzQxxhor$$a/ko7jKr0YVS6qX07pjtV/6c2ussoauNczixxMdhB833rhdEQNBwsOHEBYmTrzx4Mgq2bQDRf0uzN23y5YEEy1
+
 networks:
   torelka:
-    external: true
     name: torelka
     driver: bridge
     ipam:
       config:
         - subnet: 172.20.100.0/24
           gateway: 172.20.100.1
-# use - for set bridge with fixed name `br-torelka`
-# docker network create \
-#   --driver=bridge \
-#   --subnet=172.20.100.0/24 \
-#   --gateway=172.20.100.1 \
-#   --opt "com.docker.network.bridge.name"="br-torelka" \
-#   torelka
-
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.name: br-torelka
