@@ -2,7 +2,7 @@
 
 run() {
 	local name=$1
-	systemd-run --unit=$name --no-block --service-type=exec $name
+	systemd-run --unit="$name" --no-block --service-type=exec "$name"
 }
 
 if [ ! -f "/ok" ]; then
@@ -10,9 +10,9 @@ if [ ! -f "/ok" ]; then
 		touch /ok
 fi
 
-ip ro del default via 172.20.100.1 dev eth0
+ip ro del default
 # set def gate via socks container
-ip ro add default via 172.20.100.2 dev eth0
+ip ro add default via 172.20.100.2
 
 # set def gate via tor proxy :9050
 run t2s

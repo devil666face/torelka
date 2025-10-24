@@ -1,4 +1,4 @@
-FROM kalilinux/kali-last-release:latest
+FROM scottyhardy/docker-remote-desktop:latest
 
 ENV container=docker
 ENV CONTAINER_TIMEZONE=Etc/UTC
@@ -8,9 +8,7 @@ ENV SYSTEMD_LOG_LEVEL=debug
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
 
-ARG PKG="systemd systemd-sysv iproute2 curl procps \
-xrdp xorgxrdp xserver-xorg-core x11-xkb-utils openssh-server dbus-x11 sudo plasma-desktop konsole libreoffice curl gnupg ca-certificates bzip2 xz-utils desktop-file-utils python3 python3-venv python3-pip p7zip-full cron zip dnsutils dolphin kio-extras \
-firefox-esr"
+ARG PKG="systemd systemd-sysv iproute2 curl procps"
 
 RUN apt-get update && \
     apt-get install --yes \
