@@ -9,7 +9,9 @@ if [ ! -f "/ok" ]; then
 	useradd -m -s /bin/bash -p "${KALI_HASH}" kali
 
 	# Ensure XDG base directories and default user-places file for Dolphin/Plasma
-	mkdir -p /home/kali/.local/share /home/kali/.config /home/kali/.cache
+	mkdir -p /home/kali/.local/share \
+		/home/kali/.config \
+		/home/kali/.cache
 	if [ ! -s /home/kali/.local/share/user-places.xbel ]; then
 		cat >/home/kali/.local/share/user-places.xbel <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -24,7 +26,6 @@ EOF
 
 	chown -R kali:kali /home/kali
 
-	# Ensure XRDP uses XFCE by default
 	# Ensure XRDP listens on TCP and all interfaces
 	awk 'BEGIN{in_g=0} \
     /^\[Globals\]/{in_g=1} \
@@ -56,7 +57,10 @@ service dbus start
 
 # Clean up possible stale PID files from previous restarts
 mkdir -p /run/xrdp
-rm -f /run/xrdp/xrdp.pid /run/xrdp/xrdp-sesman.pid /var/run/xrdp/xrdp.pid /var/run/xrdp/xrdp-sesman.pid
+rm -f /run/xrdp/xrdp.pid \
+	/run/xrdp/xrdp-sesman.pid \
+	/var/run/xrdp/xrdp.pid \
+	/var/run/xrdp/xrdp-sesman.pid
 
 # Restrict XRDP logins to group 'rdpusers' only and add kali to it
 /usr/sbin/xrdp-sesman -n &

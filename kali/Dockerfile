@@ -12,11 +12,11 @@ ARG PKG="systemd systemd-sysv iproute2 curl procps \
 xrdp xorgxrdp xserver-xorg-core x11-xkb-utils openssh-server dbus-x11 sudo plasma-desktop konsole libreoffice curl gnupg ca-certificates bzip2 xz-utils desktop-file-utils python3 python3-venv python3-pip p7zip-full cron zip dnsutils dolphin kio-extras \
 firefox-esr"
 
-RUN apt-get update --quiet --quiet && \
-    apt-get install --quiet --quiet --yes \
+RUN apt-get update && \
+    apt-get install --yes \
     ${PKG} \
     && \
-    apt-get --quiet --quiet clean && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm -rf /lib/systemd/system/multi-user.target.wants/* && \
     rm -rf /etc/systemd/system/*.wants/* && \
