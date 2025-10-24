@@ -10,8 +10,11 @@ docker compose up --build --force-recreate -d
 
 # Configure your network
 
-`default gateway` - `172.20.100.3`
-`dns` - `172.20.100.3`
+```
+ip ro del default
+ip ro add default via 172.20.100.3 dev eth0
+echo "nameserver 172.20.100.3" > /etc/resolv.conf
+```
 
 # Check for all works correctly (or use this proxy)
 

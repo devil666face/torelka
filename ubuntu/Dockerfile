@@ -1,4 +1,4 @@
-FROM kalilinux/kali-last-release:latest
+FROM scottyhardy/docker-remote-desktop:latest
 
 ENV container=docker
 ENV CONTAINER_TIMEZONE=Etc/UTC
@@ -8,9 +8,7 @@ ENV SYSTEMD_LOG_LEVEL=debug
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
 
-ARG PKG="systemd systemd-sysv iproute2 curl procps \
-xrdp xorgxrdp xserver-xorg-core x11-xkb-utils openssh-server dbus-x11 sudo plasma-desktop konsole libreoffice curl gnupg ca-certificates bzip2 xz-utils desktop-file-utils python3 python3-venv python3-pip p7zip-full cron zip dnsutils dolphin kio-extras \
-firefox-esr"
+ARG PKG="iproute2 curl procps openssh-server"
 
 RUN apt-get update && \
     apt-get install --yes \
@@ -26,15 +24,10 @@ RUN apt-get update && \
     rm -rf /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* && \
     rm -rf /lib/systemd/system/systemd-update-utmp*
 
-VOLUME [ "/sys/fs/cgroup" ]
+EXPOSE 3389 22
 
-EXPOSE 3389
-
-COPY entrypoint.service /etc/systemd/system/entrypoint.service
 COPY entrypoint.sh .
 
-RUN chmod +x /entrypoint.sh && \
-    ln -sf /etc/systemd/system/entrypoint.service /etc/systemd/system/multi-user.target.wants/entrypoint.service
+RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/lib/systemd/systemd"]
-CMD ["/lib/systemd/systemd"]
+ENTRYPOINT ["/entrypoint.sh"]
