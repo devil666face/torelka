@@ -60,18 +60,17 @@ services:
     build:
       context: ./ubuntu
       dockerfile: Dockerfile
-    privileged: true
     tmpfs:
       - /tmp
       - /run
       - /run/lock
-      - /sys/fs/cgroup
     cap_add:
       - SYS_ADMIN
-    cgroup: host
+      - NET_ADMIN
     restart: unless-stopped
     ports:
       - 13389:3389/tcp # rdp
+      - 2222:22/tcp # ssh
     networks:
       torelka:
         ipv4_address: 172.20.100.4

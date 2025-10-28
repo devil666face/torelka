@@ -8,7 +8,7 @@ ENV SYSTEMD_LOG_LEVEL=debug
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
 
-ARG PKG="systemd systemd-sysv iproute2 curl procps"
+ARG PKG="iproute2 curl procps openssh-server"
 
 RUN apt-get update && \
     apt-get install --yes \
@@ -24,15 +24,10 @@ RUN apt-get update && \
     rm -rf /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* && \
     rm -rf /lib/systemd/system/systemd-update-utmp*
 
-VOLUME [ "/sys/fs/cgroup" ]
+EXPOSE 3389 22
 
-EXPOSE 3389
-
-COPY entrypoint.service /etc/systemd/system/entrypoint.service
 COPY entrypoint.sh .
 
-RUN chmod +x /entrypoint.sh && \
-    ln -sf /etc/systemd/system/entrypoint.service /etc/systemd/system/multi-user.target.wants/entrypoint.service
+RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/lib/systemd/systemd"]
-CMD ["/lib/systemd/systemd"]
+ENTRYPOINT ["/entrypoint.sh"]
