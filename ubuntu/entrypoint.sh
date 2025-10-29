@@ -7,7 +7,7 @@ run() {
 
 if [ ! -f "/ok" ]; then
 	# Create ssh config
-	mkdir -p /etc/ssh /run/sshd
+	mkdir -p /etc/ssh
 	if [ ! -f /etc/ssh/sshd_config ]; then
 		cat >/etc/ssh/sshd_config <<'EOF'
 Port 22
@@ -46,6 +46,7 @@ ip ro add default via 172.20.100.3
 /usr/sbin/xrdp-sesman
 
 # Run ssh server
+mkdir -p /run/sshd
 /usr/sbin/sshd
 
 # Run xrdp in foreground if no commands specified
