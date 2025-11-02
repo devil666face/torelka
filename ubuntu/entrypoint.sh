@@ -1,9 +1,7 @@
 #!/bin/bash
 
-run() {
-	local name=$1
-	systemd-run --unit="$name" --no-block --service-type=exec "$name"
-}
+set -eE
+trap 'echo "Error: line: $LINENO: $(sed -n "${LINENO}p" "$0")"; exit 1' ERR
 
 if [ ! -f "/ok" ]; then
 	# Create ssh config
@@ -23,6 +21,7 @@ EOF
 	fi
 	sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 	sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+
 	ssh-keygen -A >/dev/null 2>&1
 
 	# Create the user account
@@ -41,18 +40,15 @@ ip ro add default via 172.20.100.3
 # Remove existing sesman/xrdp PID files to prevent rdp sessions hanging on container restart
 [ ! -f /var/run/xrdp/xrdp-sesman.pid ] || rm -f /var/run/xrdp/xrdp-sesman.pid
 [ ! -f /var/run/xrdp/xrdp.pid ] || rm -f /var/run/xrdp/xrdp.pid
+[ -d /run/sshd ] || mkdir -p /run/sshd
 
 # Start xrdp sesman service
 /usr/sbin/xrdp-sesman
-
-# Run ssh server
-mkdir -p /run/sshd
+/usr/sbin/xrdp
 /usr/sbin/sshd
 
-# Run xrdp in foreground if no commands specified
 if [ -z "$1" ]; then
-	/usr/sbin/xrdp --nodaemon
+	sleep infinity
 else
-	/usr/sbin/xrdp
 	exec "$@"
 fi

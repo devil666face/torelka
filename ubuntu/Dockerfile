@@ -8,7 +8,7 @@ ENV SYSTEMD_LOG_LEVEL=debug
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone
 
-ARG PKG="iproute2 curl procps openssh-server"
+ARG PKG="iproute2 curl procps openssh-server torbrowser-launcher"
 
 RUN apt-get update && \
     apt-get install --yes \
