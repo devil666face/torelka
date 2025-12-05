@@ -5,7 +5,7 @@ sysctl -w net.ipv4.ip_forward=1
 # Run
 
 ```bash
-docker compose up --build --force-recreate -d
+docker compose up -d
 ```
 
 # Configure your network

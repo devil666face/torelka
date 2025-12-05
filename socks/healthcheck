@@ -1,13 +1,13 @@
 #!/bin/bash
 
 flush() {
-	ip ro del all
+	ip ro del default
 	shutdown -f now
 }
 
 check() {
 	local name=$1
-	if ! pgrep $name >/dev/null; then
+	if ! pgrep "$name" >/dev/null; then
 		flush
 		exit 1
 	fi

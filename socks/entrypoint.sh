@@ -2,7 +2,7 @@
 
 run() {
 	local name=$1
-	systemd-run --unit=$name --no-block --service-type=exec $name
+	systemd-run --unit="$name" --no-block --service-type=exec "$name"
 }
 
 if [ ! -f "/ok" ]; then
