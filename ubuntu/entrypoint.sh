@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eE
 trap 'echo "Error: line: $LINENO: $(sed -n "${LINENO}p" "$0")"; exit 1' ERR
 
@@ -35,14 +34,13 @@ fi
 
 ip ro del default
 # set def gate via tor container
-ip ro add default via 172.20.100.3
+ip route add default via "$GATEWAY"
 
 # Remove existing sesman/xrdp PID files to prevent rdp sessions hanging on container restart
 [ ! -f /var/run/xrdp/xrdp-sesman.pid ] || rm -f /var/run/xrdp/xrdp-sesman.pid
 [ ! -f /var/run/xrdp/xrdp.pid ] || rm -f /var/run/xrdp/xrdp.pid
 [ -d /run/sshd ] || mkdir -p /run/sshd
 
-# Start xrdp sesman service
 /usr/sbin/xrdp-sesman
 /usr/sbin/xrdp
 /usr/sbin/sshd

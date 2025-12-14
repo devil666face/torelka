@@ -6,24 +6,21 @@ services:
     build:
       context: ./socks
       dockerfile: Dockerfile
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-      - /run/lock
-      - /sys/fs/cgroup
+    devices:
+      - /dev/net/tun
     cap_add:
       - SYS_ADMIN
-    cgroup: host
+      - NET_ADMIN
     volumes:
       - ./t2s/socks/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
     restart: unless-stopped
+    stop_grace_period: 5s
     ports:
       - 1081:1080/tcp # proxy to socks gateway only
     networks:
       torelka:
-        ipv4_address: 172.20.100.2
+        ipv4_address: 172.20.100.100
 
   tor:
     image: ghcr.io/devil666face/tor:latest
@@ -31,27 +28,28 @@ services:
     build:
       context: ./tor
       dockerfile: Dockerfile
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /run
-      - /run/lock
-      - /sys/fs/cgroup
+    devices:
+      - /dev/net/tun
     cap_add:
       - SYS_ADMIN
-    cgroup: host
+      - NET_ADMIN
     restart: unless-stopped
+    stop_grace_period: 5s
     volumes:
       - ./etc/tor:/etc/tor
       - ./t2s/tor/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
     ports:
       - 1082:1080/tcp # proxy to full relay
+    environment:
+      GATEWAY: 172.20.100.100
     networks:
       torelka:
-        ipv4_address: 172.20.100.3
+        ipv4_address: 172.20.100.254
     depends_on:
       - socks
+    dns:
+      - 172.20.100.100
 
   ubuntu:
     image: ghcr.io/devil666face/ubuntu-torelka:latest
@@ -67,15 +65,18 @@ services:
       - SYS_ADMIN
       - NET_ADMIN
     restart: unless-stopped
+    stop_grace_period: 5s
     ports:
       - 13389:3389/tcp # rdp
       - 2222:22/tcp # ssh
+    environment:
+      GATEWAY: 172.20.100.254
     networks:
-      torelka:
-        ipv4_address: 172.20.100.4
+      - torelka
     depends_on:
       - tor
-    dns: [172.20.100.3]
+    dns:
+      - 172.20.100.254
 
 networks:
   torelka:

@@ -1,21 +1,24 @@
 #!/bin/bash
-
-run() {
-	local name=$1
-	systemd-run --unit="$name" --no-block --service-type=exec "$name"
-}
+set -eE
+trap 'echo "Error: line: $LINENO: $(sed -n "${LINENO}p" "$0")"; exit 1' ERR
 
 if [ ! -f "/ok" ]; then
-	systemctl enable tor --now &&
-		touch /ok
+	touch /ok
 fi
 
 ip ro del default
 # set def gate via socks container
-ip ro add default via 172.20.100.2
+ip route add default via "$GATEWAY"
 
+# run tor
+tor -f /etc/tor/torrc &
 # set def gate via tor proxy :9050
-run t2s
-
+t2s &
 # run socks5 proxy server for input
-run gox
+gox &
+
+if [ -z "$1" ]; then
+	sleep infinity
+else
+	exec "$@"
+fi

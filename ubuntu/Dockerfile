@@ -3,7 +3,6 @@ FROM scottyhardy/docker-remote-desktop:latest
 ENV container=docker
 ENV CONTAINER_TIMEZONE=Etc/UTC
 ENV DEBIAN_FRONTEND=noninteractive
-ENV SYSTEMD_LOG_LEVEL=debug
 
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
     echo $CONTAINER_TIMEZONE > /etc/timezone

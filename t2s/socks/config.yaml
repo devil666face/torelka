@@ -28,8 +28,9 @@ chisel:
   proxy: ""
 dns:
   enable: true
-  listen: 0.0.0.0
+  listen: 172.20.100.100
   render: true
+  resolvectl: false
   resolvers:
     - ip: 1.1.1.1
       proto: tcp

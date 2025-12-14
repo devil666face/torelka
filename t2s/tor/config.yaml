@@ -6,10 +6,10 @@ interface:
     - 10.0.0.0/8
     - 172.16.0.0/12
     - 192.168.0.0/16
-    - 90.192.45.113/32
-    - 85.215.50.238/32
-    - 51.38.220.224/32
-    - 57.128.59.134/32
+    - 115.186.212.206/32
+    - 195.52.161.35/32
+    - 57.128.57.245/32
+    - 91.134.99.182/32
   custom_routes: []
   metric: 512
   sleep: 0
@@ -32,11 +32,12 @@ chisel:
   proxy: ""
 dns:
   enable: true
-  listen: 0.0.0.0
+  listen: 172.20.100.254
   render: true
+  resolvectl: false
   resolvers:
-    - ip: 1.1.1.1
-      proto: tcp
+    - ip: 172.20.100.100
+      proto: udp
       port: 53
       rule: ""
   records:

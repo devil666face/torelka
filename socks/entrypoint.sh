@@ -1,16 +1,18 @@
 #!/bin/bash
-
-run() {
-	local name=$1
-	systemd-run --unit="$name" --no-block --service-type=exec "$name"
-}
+set -eE
+trap 'echo "Error: line: $LINENO: $(sed -n "${LINENO}p" "$0")"; exit 1' ERR
 
 if [ ! -f "/ok" ]; then
 	touch /ok
 fi
 
 # set def gate via socks5 proxy
-run t2s
-
+t2s &
 # run socks5 proxy server for input
-run gox
+gox &
+
+if [ -z "$1" ]; then
+	sleep infinity
+else
+	exec "$@"
+fi
