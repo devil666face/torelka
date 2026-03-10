@@ -14,10 +14,10 @@ services:
     volumes:
       - ./t2s/socks/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
-    restart: unless-stopped
+    restart: on-failure
     stop_grace_period: 5s
     ports:
-      - 1081:1080/tcp # proxy to socks gateway only
+      - 127.0.0.1:1081:1080/tcp # proxy to socks gateway only
     networks:
       torelka:
         ipv4_address: 172.20.100.100
@@ -33,14 +33,14 @@ services:
     cap_add:
       - SYS_ADMIN
       - NET_ADMIN
-    restart: unless-stopped
+    restart: on-failure
     stop_grace_period: 5s
     volumes:
       - ./etc/tor:/etc/tor
       - ./t2s/tor/:/root/.config/t2s
       - ./gox/config.yaml:/config.yaml
     ports:
-      - 1082:1080/tcp # proxy to full relay
+      - 127.0.0.1:1082:1080/tcp # proxy to full relay
     environment:
       GATEWAY: 172.20.100.100
     networks:
@@ -62,13 +62,12 @@ services:
       - /tmp
       - /run/lock
     cap_add:
-      - SYS_ADMIN
       - NET_ADMIN
-    restart: unless-stopped
+    restart: on-failure
     stop_grace_period: 5s
     ports:
-      - 13389:3389/tcp # rdp
-      - 2222:22/tcp # ssh
+      - 127.0.0.1:13389:3389/tcp # rdp
+      - 127.0.0.1:2222:22/tcp # ssh
     environment:
       GATEWAY: 172.20.100.254
     networks:
